@@ -6,7 +6,7 @@
 #    By: schuah <schuah@student.42kl.edu.my>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/07 10:52:13 by schuah            #+#    #+#              #
-#    Updated: 2022/08/23 21:20:52 by schuah           ###   ########.fr        #
+#    Updated: 2022/08/25 17:48:30 by schuah           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,11 @@ RM			=	rm -f
 CFLAGS		=	-Wall -Wextra -Werror
 SRCS_FILES	=	rush_main \
 				rush_solve \
-				rush_helper
+				rush_helper \
+				rush_backtrack \
+				rush_testboard \
+				rush_solvehelper \
+				rush_backtrackhelper
 SRCS		= 	$(addprefix $(SRCS_DIR), $(addsuffix .c, $(SRCS_FILES)))
 OBJS		= 	$(addprefix $(OBJS_DIR), $(addsuffix .o, $(SRCS_FILES)))
 SRCS_DIR	=	srcs/

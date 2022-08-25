@@ -6,7 +6,7 @@
 /*   By: schuah <schuah@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 18:27:35 by schuah            #+#    #+#             */
-/*   Updated: 2022/08/23 19:37:38 by schuah           ###   ########.fr       */
+/*   Updated: 2022/08/25 20:25:31 by schuah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,12 @@ int	main(int ac, char **av)
 	{
 		x = -1;
 		while (++x < 4)
-			table[y][x] = 30;
+			table[y][x] = 1234;
 	}
-	solve(table, input);
+	if (bruteforce(table, input, 0, 0))
+		print_table(table, input);
+	else
+		ft_printf("Unsolvable\n");
 	free(input);
 	return (0);
 }
