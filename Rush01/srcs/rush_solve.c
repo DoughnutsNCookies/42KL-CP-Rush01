@@ -6,13 +6,13 @@
 /*   By: schuah <schuah@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 18:54:27 by schuah            #+#    #+#             */
-/*   Updated: 2022/08/25 20:13:41 by schuah           ###   ########.fr       */
+/*   Updated: 2022/08/26 11:03:36 by schuah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rush.h"
 
-static int	reduce_start(int start)
+int	reduce_start(int start)
 {
 	char	*temp;
 
@@ -24,83 +24,83 @@ static int	reduce_start(int start)
 	return (start);
 }
 
-static void	fill_left(int i, int index, int table[4][4])
+static void	fill_left(int i, int index, int table[B_MAX][B_MAX])
 {
 	int		start;
 	int		spaces;
 
-	start = 1000;
+	start = START;
 	spaces = 0;
 	if (index == 0)
 	{
-		while (index < 4)
+		while (index < B_MAX)
 		{
-			table[index++][i % 4] = start;
+			table[index++][i % B_MAX] = start;
 			start = reduce_start(start);
 		}
 	}
-	else if (index == 3)
+	else if (index == B_MAX - 1)
 	{
 		while (index > 0)
 		{
-			table[index--][i % 4] = start;
+			table[index--][i % B_MAX] = start;
 			start = reduce_start(start);
 		}
 	}
 }
 
-static void	fill_right(int i, int index, int table[4][4])
+static void	fill_right(int i, int index, int table[B_MAX][B_MAX])
 {
 	int	start;
 
-	start = 1000;
+	start = START;
 	if (index == 0)
 	{
-		while (index < 4)
+		while (index < B_MAX)
 		{
-			table[i % 4][index++] = start;
+			table[i % B_MAX][index++] = start;
 			start = reduce_start(start);
 		}
 	}
-	else if (index == 3)
+	else if (index == B_MAX - 1)
 	{
 		while (index > 0)
 		{
-			table[i % 4][index--] = start;
+			table[i % B_MAX][index--] = start;
 			start = reduce_start(start);
 		}
 	}
 }
 
-static void	put_max(int table[4][4], int i)
+static void	put_max(int table[B_MAX][B_MAX], int i)
 {
-	if (i <= 3)
-		table[0][i] = 4;
-	else if (i >= 4 && i <= 7)
-		table[3][i - 4] = 4;
-	else if (i >= 8 && i <= 11)
-		table[i - 8][0] = 4;
-	else if (i >= 12 && i <= 15)
-		table[i - 12][3] = 4;
+	if (i <= B_MAX - 1)
+		table[0][i] = B_MAX;
+	else if (i >= B_MAX && i <= (B_MAX * 2) - 1)
+		table[B_MAX - 1][i - B_MAX] = B_MAX;
+	else if (i >= B_MAX * 2 && i <= (B_MAX * 3) - 1)
+		table[i - (B_MAX * 2)][0] = B_MAX;
+	else if (i >= B_MAX * 3 && i <= (B_MAX * 4) - 1)
+		table[i - (B_MAX * 3)][B_MAX - 1] = B_MAX;
 }
 
-void	solve_for_minmax(int table[4][4], int input[16])
+void	solve_for_minmax(int table[B_MAX][B_MAX], int input[I_MAX])
 {
 	int	i;
 
 	i = -1;
-	while (++i < 16)
+	while (++i < (B_MAX * B_MAX))
 	{
-		if (input[i] == 4)
+		if (input[i] == B_MAX)
 		{
-			if (i <= 3)
+			if (i <= B_MAX - 1)
 				fill_left(i, 0, table);
-			if (i >= 4 && i <= 7)
-				fill_left(i, 3, table);
-			if (i >= 8 && i <= 11)
+			if (i >= B_MAX && i <= (B_MAX * 2) - 1)
+				fill_left(i, B_MAX - 1, table);
+			if (i >= B_MAX * 2 && i <= (B_MAX * 3) - 1)
 				fill_right(i, 0, table);
-			if (i >= 12 && i <= 15)
-				fill_right(i, 3, table);
+			if (i >= B_MAX * 3 && i <= (B_MAX * 4) - 1)
+				fill_right(i, B_MAX - 1, table);
 		}
 		if (input[i] == 1)
 			put_max(table, i);

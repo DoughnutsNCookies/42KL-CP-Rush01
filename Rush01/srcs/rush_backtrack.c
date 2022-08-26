@@ -6,13 +6,13 @@
 /*   By: schuah <schuah@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 15:40:39 by schuah            #+#    #+#             */
-/*   Updated: 2022/08/25 20:13:20 by schuah           ###   ########.fr       */
+/*   Updated: 2022/08/26 13:17:08 by schuah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rush.h"
 
-static int	get_max(int table[4][4])
+static int	get_max(int table[B_MAX][B_MAX])
 {
 	int	max;
 	int	x;
@@ -20,16 +20,16 @@ static int	get_max(int table[4][4])
 
 	y = -1;
 	max = 0;
-	while (++y < 4)
+	while (++y < B_MAX)
 	{
 		x = -1;
-		while (++x < 4)
+		while (++x < B_MAX)
 			max += table[x][y];
 	}
 	return (max);
 }
 
-static int	find_best_box(int table[4][4])
+static int	find_best_box(int table[B_MAX][B_MAX])
 {
 	int		x;
 	int		y;
@@ -39,27 +39,29 @@ static int	find_best_box(int table[4][4])
 	y = -1;
 	max_space = 0;
 	best = 0;
-	while (++y < 4)
+	while (++y < B_MAX)
 	{
 		x = -1;
-		while (++x < 4)
-			best = find_box(table, (y * 4) + x, max_space, best);
+		while (++x < B_MAX)
+			best = find_box(table, (y * B_MAX) + x, max_space, best);
 	}
 	return (best);
 }
 
-static void	put_and_check(int table[4][4], int opt, int xy)
+static void	put_and_check(int table[B_MAX][B_MAX], int opt, int xy)
 {
 	int	temp;
+	int	start;
+	int	i;
 
-	if (opt == 1)
-		table[xy / 4][xy % 4] = 1000;
-	if (opt == 2)
-		table[xy / 4][xy % 4] = 200;
-	if (opt == 3)
-		table[xy / 4][xy % 4] = 30;
-	if (opt == 4)
-		table[xy / 4][xy % 4] = 4;
+	i = -1;
+	start = START;
+	while (++i < B_MAX)
+	{
+		if (opt == i + 1 && opt != 0)
+			table[xy / B_MAX][xy % B_MAX] = start;
+		start = reduce_start(start);
+	}
 	while (1)
 	{
 		temp = get_max(table);
@@ -70,15 +72,15 @@ static void	put_and_check(int table[4][4], int opt, int xy)
 	}
 }
 
-static int	find_next_best(int copy[4][4], int table[4][4],
-	int best_pos, int input[16])
+static int	find_next_best(int copy[B_MAX][B_MAX], int table[B_MAX][B_MAX],
+	int best_pos, int input[I_MAX])
 {
 	int		i;
 	char	*best_opt;
 
 	i = -1;
-	best_opt = ft_itoa(table[best_pos / 4][best_pos % 4]);
-	while (++i < 4 && best_opt[i] != '\0')
+	best_opt = ft_itoa(table[best_pos / B_MAX][best_pos % B_MAX]);
+	while (++i < B_MAX && best_opt[i] != '\0')
 	{
 		while (best_opt[i] == '0' && best_opt[i] != '\0')
 			i++;
@@ -96,10 +98,10 @@ static int	find_next_best(int copy[4][4], int table[4][4],
 	return (0);
 }
 
-int	bruteforce(int table[4][4], int input[16], int opt, int xy)
+int	bruteforce(int table[B_MAX][B_MAX], int input[I_MAX], int opt, int xy)
 {
 	int		best_pos;
-	int		copy[4][4];
+	int		copy[B_MAX][B_MAX];
 
 	if (opt == 0 && xy == 0)
 	{
@@ -107,7 +109,7 @@ int	bruteforce(int table[4][4], int input[16], int opt, int xy)
 		edge_constraint(table, input);
 	}
 	put_and_check(table, opt, xy);
-	if (get_max(table) == 1234 * 4)
+	if (get_max(table) == N * B_MAX)
 	{
 		if (check_xy(table, input, -1, -1))
 			return (1);

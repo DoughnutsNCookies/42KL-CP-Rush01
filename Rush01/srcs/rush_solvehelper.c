@@ -6,7 +6,7 @@
 /*   By: schuah <schuah@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 10:30:14 by schuah            #+#    #+#             */
-/*   Updated: 2022/08/25 17:22:53 by schuah           ###   ########.fr       */
+/*   Updated: 2022/08/26 12:13:21 by schuah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,26 @@
 
 int	mto_pos(int n)
 {
-	return (n != 1000 && n != 200 && n != 30 && n != 4);
+	int	start;
+
+	start = START;
+	while (1)
+	{
+		if (n == start)
+			return (0);
+		if (start == B_MAX)
+			break ;
+		start = reduce_start_tens(start);
+	}
+	return (1);
 }
 
-int	has_existing(int table[4][4], int x, int y)
+int	has_existing(int table[B_MAX][B_MAX], int x, int y)
 {
 	int	i;
 
 	i = -1;
-	while (++i < 4)
+	while (++i < B_MAX)
 	{
 		if (mto_pos(table[y][i]) == 0
 			&& check_removed(table[y][x], table[y][i]) == 0)
@@ -57,53 +68,47 @@ int	check_removed(int n, int toremove)
 	return (1);
 }
 
-int	check_single(int n, int table[4][4], int x, int y)
+int	check_single(int n, int table[B_MAX][B_MAX], int x, int y)
 {
 	int		i;
 	int		max;
+	int		ten;
+	int		start;
 
 	i = -1;
 	max = 0;
-	while (++i < 4)
+	while (++i < B_MAX)
 		max += table[y][i] + table[i][x];
 	max -= n;
-	if (max % 10 == 4)
-		return (4);
-	if (max % 100 == 30)
-		return (30);
-	if (max % 1000 == 200)
-		return (200);
-	if (max % 10000 == 1000)
-		return (1000);
+	start = START;
+	ten = 1000000000;
+	while (1)
+	{
+		if (max % ten == start)
+			return (start / 10);
+		if (start == B_MAX)
+			break ;
+		ten /= 10;
+		start = reduce_start_tens(start);
+	}
 	return (0);
 }
 
-/* 4 - Clue + 2 + Distance (start from 1) */
 int	remove_option(int input, int clue, int dist)
 {
 	int		n;
+	int		i;
 	char	*temp;
 
 	temp = ft_itoa(input);
 	n = 4 - clue + 2 + dist;
-	if (n == 1 && temp[0] == '1')
-		input -= 1000;
-	if (n == 2 && temp[1] == '2')
+	i = 2;
+	while (i <= B_MAX)
 	{
-		input -= 200;
-		if (temp[2] == '3')
-			input -= 30;
-		if (temp[3] == '4')
-		input -= 4;
+		if (n == i && temp[i] == n - 48)
+			input -= reduce_input_recurs(temp, i - 1, n);
+		i++;
 	}
-	if (n == 3 && temp[2] == '3')
-	{
-		input -= 30;
-		if (temp[3] == '4')
-			input -= 4;
-	}
-	if (n == 4 && temp[3] == '4')
-		input -= 4;
 	free(temp);
 	return (input);
 }

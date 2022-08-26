@@ -6,7 +6,7 @@
 /*   By: schuah <schuah@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/23 18:27:35 by schuah            #+#    #+#             */
-/*   Updated: 2022/08/25 20:25:31 by schuah           ###   ########.fr       */
+/*   Updated: 2022/08/26 12:04:07 by schuah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	check_valid(int ac, char **av)
 	wc = 0;
 	while (av[1][wc] != '\0')
 		wc++;
-	return (wc == 31);
+	return (wc == MAX_INPUT_RUSH);
 }
 
 int	*get_input(char *str)
@@ -30,7 +30,7 @@ int	*get_input(char *str)
 	int	j;
 	int	*input;
 
-	input = malloc(sizeof(int) * 16);
+	input = malloc(sizeof(int) * (B_MAX * B_MAX));
 	i = -1;
 	j = -1;
 	while (str[++i] != '\0')
@@ -41,7 +41,7 @@ int	*get_input(char *str)
 
 int	main(int ac, char **av)
 {
-	int	table[4][4];
+	int	table[B_MAX][B_MAX];
 	int	*input;
 	int	x;
 	int	y;
@@ -50,11 +50,11 @@ int	main(int ac, char **av)
 		return (ft_printf("Input Error\n"));
 	input = get_input(av[1]);
 	y = -1;
-	while (++y < 4)
+	while (++y < B_MAX)
 	{
 		x = -1;
-		while (++x < 4)
-			table[y][x] = 1234;
+		while (++x < B_MAX)
+			table[y][x] = N;
 	}
 	if (bruteforce(table, input, 0, 0))
 		print_table(table, input);
